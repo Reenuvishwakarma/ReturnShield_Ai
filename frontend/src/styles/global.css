@@ -8,26 +8,50 @@
 }
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-app);
   color: var(--text-main);
-  line-height: 1.5;
+  line-height: 1.55;
+  letter-spacing: -0.011em;
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 40%),
+              var(--bg-app);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 button {
-  font-family: inherit;
+  font-family: var(--font-body);
   cursor: pointer;
   border: none;
   background: none;
@@ -35,65 +59,79 @@ button {
 }
 
 input, select, textarea {
-  font-family: inherit;
-  font-size: 0.95rem;
+  font-family: var(--font-body);
+  font-size: 0.925rem;
   color: var(--text-main);
 }
 
 /* Typography Utility Classes */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-primary-950);
+  letter-spacing: -0.025em;
+}
+
 .heading-hero {
-  font-size: 3.25rem;
+  font-size: 3.5rem;
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.15;
-  color: var(--color-primary-900);
+  color: var(--color-primary-950);
 }
 
 .heading-section {
   font-size: 2.25rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.028em;
   line-height: 1.25;
-  color: var(--color-primary-900);
+  color: var(--color-primary-950);
 }
 
 .heading-card {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--color-primary-800);
+  letter-spacing: -0.02em;
+  color: var(--color-primary-900);
 }
 
 .text-subheading {
-  font-size: 1.125rem;
+  font-size: 1.05rem;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
-/* Base Button Styles */
+/* Base Button Styles with Micro-interactions */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   font-weight: 600;
-  font-size: 0.925rem;
+  font-size: 0.9rem;
   padding: 0.65rem 1.25rem;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   white-space: nowrap;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn-primary {
-  background-color: var(--color-accent-500);
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
   color: var(--text-inverse);
-  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-600);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.38);
+  transform: translateY(-1.5px);
 }
 
 .btn-secondary {
@@ -104,28 +142,33 @@ input, select, textarea {
 }
 
 .btn-secondary:hover {
-  background-color: var(--bg-surface-subtle);
-  border-color: var(--border-strong);
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-outline {
   background: transparent;
   color: var(--color-accent-500);
-  border: 1.5px solid var(--color-accent-400);
+  border: 1.5px solid var(--color-accent-200);
 }
 
 .btn-outline:hover {
   background: var(--color-accent-50);
+  border-color: var(--color-accent-400);
 }
 
 .btn-lg {
   padding: 0.85rem 1.75rem;
   font-size: 1rem;
+  border-radius: var(--radius-lg);
 }
 
 .btn-sm {
   padding: 0.4rem 0.85rem;
   font-size: 0.825rem;
+  border-radius: var(--radius-sm);
 }
 
 /* Badge Styles */
@@ -133,29 +176,36 @@ input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 0.65rem;
+  padding: 0.25rem 0.7rem;
   border-radius: var(--radius-full);
   font-size: 0.775rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  transition: all var(--transition-fast);
 }
 
-.badge-risk-low {
+.badge-risk-low, .badge-success {
   background: var(--risk-low-bg);
   color: var(--risk-low-text);
   border: 1px solid var(--risk-low-border);
 }
 
-.badge-risk-medium {
+.badge-risk-medium, .badge-warning {
   background: var(--risk-medium-bg);
   color: var(--risk-medium-text);
   border: 1px solid var(--risk-medium-border);
 }
 
-.badge-risk-high {
+.badge-risk-high, .badge-danger {
   background: var(--risk-high-bg);
   color: var(--risk-high-text);
   border: 1px solid var(--risk-high-border);
+}
+
+.badge-primary {
+  background: var(--color-accent-50);
+  color: var(--color-accent-600);
+  border: 1px solid var(--color-accent-200);
 }
 
 .badge-neutral {
@@ -170,6 +220,44 @@ input, select, textarea {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
