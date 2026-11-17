@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { orderService, productService } from '../services/api';
 import Sidebar from '../components/Sidebar';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Plus, Search, X, Check, AlertCircle, Camera, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Dashboard.css';
@@ -14,7 +15,6 @@ export default function Orders() {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  // Form State
   const [orderRef, setOrderRef] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [productId, setProductId] = useState('');
@@ -27,10 +27,7 @@ export default function Orders() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [oRes, pRes] = await Promise.all([
-        orderService.list(),
-        productService.list()
-      ]);
+      const [oRes, pRes] = await Promise.all([orderService.list(), productService.list()]);
       setOrders(oRes.data.orders);
       setProducts(pRes.data.products);
       if (pRes.data.products.length > 0 && !productId) {
@@ -44,24 +41,18 @@ export default function Orders() {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   const handleProductSelect = (id) => {
     setProductId(id);
     const selected = products.find(p => p.id === parseInt(id));
-    if (selected) {
-      setOrderAmount(selected.selling_price * quantity);
-    }
+    if (selected) setOrderAmount(selected.selling_price * quantity);
   };
 
   const handleQtyChange = (qty) => {
     setQuantity(qty);
     const selected = products.find(p => p.id === parseInt(productId));
-    if (selected) {
-      setOrderAmount(selected.selling_price * qty);
-    }
+    if (selected) setOrderAmount(selected.selling_price * qty);
   };
 
   const handleCreate = async (e) => {
@@ -69,7 +60,6 @@ export default function Orders() {
     setError('');
     setSuccess('');
     setSubmitting(true);
-
     try {
       await orderService.create({
         order_ref: orderRef,
@@ -99,7 +89,6 @@ export default function Orders() {
   return (
     <div className="dashboard-layout">
       <Sidebar user={user} onLogout={logout} />
-
       <main className="dashboard-main">
         <header className="dashboard-topbar">
           <div>
@@ -114,13 +103,20 @@ export default function Orders() {
 
         <div className="dashboard-content">
           {success && (
-            <div className="auth-alert" style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>
+            <motion.div
+              className="auth-alert success"
+              initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              style={{ marginBottom: '1rem' }}
+            >
               <Check size={18} /> <span>{success}</span>
-            </div>
+            </motion.div>
           )}
 
-          {/* Search Bar */}
-          <div className="card" style={{ padding: '0.85rem 1.25rem' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="card" style={{ padding: '0.85rem 1.1rem', marginBottom: '1.25rem' }}
+          >
             <div className="input-with-icon">
               <Search size={18} className="field-icon" />
               <input
@@ -131,10 +127,13 @@ export default function Orders() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-          </div>
+          </motion.div>
 
-          {/* Orders Table */}
-          <div className="table-container">
+          <motion.div
+            className="table-container"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+          >
             <div className="table-header">
               <h3 className="heading-card">Registered Orders ({filtered.length})</h3>
             </div>
@@ -165,11 +164,11 @@ export default function Orders() {
                 <tbody>
                   {filtered.map((o) => (
                     <tr key={o.id}>
-                      <td><strong>{o.order_ref}</strong></td>
+                      <td><strong style={{ color: 'var(--color-violet)', fontFamily: 'monospace', fontSize: '0.85rem' }}>{o.order_ref}</strong></td>
                       <td>{o.customer_name}</td>
                       <td>
-                        <div>{o.product_name}</div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{o.product_sku}</span>
+                        <div style={{ fontWeight: 500 }}>{o.product_name}</div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{o.product_sku}</span>
                       </td>
                       <td>
                         <strong>₹{o.order_amount.toLocaleString()}</strong>
@@ -180,11 +179,11 @@ export default function Orders() {
                       </td>
                       <td>
                         {o.has_dispatch_evidence ? (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#059669', fontSize: '0.8rem', fontWeight: 600 }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--success)', fontSize: '0.8rem', fontWeight: 600 }}>
                             <CheckCircle2 size={14} /> {o.evidence_token}
                           </span>
                         ) : (
-                          <span style={{ color: '#d97706', fontSize: '0.8rem' }}>Unprotected</span>
+                          <span style={{ color: 'var(--warning)', fontSize: '0.8rem', fontWeight: 500 }}>Unprotected</span>
                         )}
                       </td>
                       <td>
@@ -193,7 +192,7 @@ export default function Orders() {
                             <Camera size={13} /> Capture
                           </Link>
                         ) : (
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Protected</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 500 }}>✓ Protected</span>
                         )}
                       </td>
                     </tr>
@@ -201,106 +200,75 @@ export default function Orders() {
                 </tbody>
               </table>
             )}
-          </div>
+          </motion.div>
         </div>
 
-        {/* Create Order Modal */}
-        {showModal && (
-          <div style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem'
-          }}>
-            <div className="card" style={{ width: '100%', maxWidth: '500px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <h3 className="heading-card">Register Dispatched Order</h3>
-                <button onClick={() => setShowModal(false)}><X size={20} /></button>
-              </div>
-
-              {error && (
-                <div className="auth-alert error">
-                  <AlertCircle size={16} /> <span>{error}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleCreate}>
-                <div className="form-group">
-                  <label className="form-label">Marketplace Order Reference</label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="e.g. MEESH-ORD-99410"
-                    value={orderRef}
-                    onChange={(e) => setOrderRef(e.target.value)}
-                  />
+        <AnimatePresence>
+          {showModal && (
+            <motion.div
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="card"
+                style={{ width: '100%', maxWidth: '500px' }}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                  <div>
+                    <h3 className="heading-card" style={{ marginBottom: '0.2rem' }}>Register Dispatched Order</h3>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Log an order to enable dispatch evidence capture</p>
+                  </div>
+                  <button onClick={() => setShowModal(false)} style={{ color: 'var(--text-muted)', padding: '0.3rem', background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Customer Name</label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="e.g. Simran Kaur"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                  />
-                </div>
+                {error && (
+                  <div className="auth-alert error">
+                    <AlertCircle size={16} /> <span>{error}</span>
+                  </div>
+                )}
 
-                <div className="form-group">
-                  <label className="form-label">Select Dispatched Product</label>
-                  <select 
-                    className="form-input"
-                    value={productId}
-                    onChange={(e) => handleProductSelect(e.target.value)}
-                    required
-                  >
-                    {products.map(p => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} ({p.sku}) — ₹{p.selling_price}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <form onSubmit={handleCreate}>
                   <div className="form-group">
-                    <label className="form-label">Quantity</label>
-                    <input
-                      type="number"
-                      min={1}
-                      required
-                      className="form-input"
-                      value={quantity}
-                      onChange={(e) => handleQtyChange(e.target.value)}
-                    />
+                    <label className="form-label">Marketplace Order Reference</label>
+                    <input type="text" required className="form-input" placeholder="e.g. MEESH-ORD-99410" value={orderRef} onChange={(e) => setOrderRef(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Order Total (INR)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      required
-                      className="form-input"
-                      value={orderAmount}
-                      onChange={(e) => setOrderAmount(e.target.value)}
-                    />
+                    <label className="form-label">Customer Name</label>
+                    <input type="text" required className="form-input" placeholder="e.g. Simran Kaur" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                   </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary" disabled={submitting}>
-                    {submitting ? 'Registering...' : 'Register Order'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+                  <div className="form-group">
+                    <label className="form-label">Select Dispatched Product</label>
+                    <select className="form-input" value={productId} onChange={(e) => handleProductSelect(e.target.value)} required>
+                      {products.map(p => (
+                        <option key={p.id} value={p.id}>{p.name} ({p.sku}) — ₹{p.selling_price}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="form-group">
+                      <label className="form-label">Quantity</label>
+                      <input type="number" min={1} required className="form-input" value={quantity} onChange={(e) => handleQtyChange(e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Order Total (INR)</label>
+                      <input type="number" step="0.01" required className="form-input" value={orderAmount} onChange={(e) => setOrderAmount(e.target.value)} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" disabled={submitting}>
+                      {submitting ? 'Registering...' : 'Register Order'}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

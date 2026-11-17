@@ -49,9 +49,12 @@ export default function Sidebar({ user, onLogout }) {
             <ShieldAlert size={20} />
           </div>
           {!collapsed && (
-            <span className="sidebar-title">
-              ReturnShield <span className="sidebar-badge">AI</span>
-            </span>
+            <div className="sidebar-brand-text">
+              <span className="sidebar-title">
+                ReturnShield <span className="sidebar-badge">AI</span>
+              </span>
+              <span className="sidebar-tagline">Smarter Returns. Safer Businesses.</span>
+            </div>
           )}
         </div>
         <button 

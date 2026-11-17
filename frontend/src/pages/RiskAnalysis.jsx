@@ -13,10 +13,50 @@ import {
   FileText, 
   HelpCircle,
   TrendingUp,
-  Cpu
+  Cpu,
+  Layers,
+  ArrowRight,
+  ShieldCheck,
+  Check
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Dashboard.css';
+
+/**
+ * Circular Progress Gauge for Normalized AI Risk Score (0 - 100)
+ */
+function CircularScore({ score, level }) {
+  const radius = 34;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - ((score || 0) / 100) * circumference;
+  const color = level === 'HIGH' ? '#EF4444' : level === 'MEDIUM' ? '#F59E0B' : '#10B981';
+
+  return (
+    <div style={{ position: 'relative', width: 84, height: 84, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width={84} height={84} style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={42} cy={42} r={radius} stroke="#E8E8F2" strokeWidth={6.5} fill="transparent" />
+        <circle
+          cx={42}
+          cy={42}
+          r={radius}
+          stroke={color}
+          strokeWidth={6.5}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          fill="transparent"
+          style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+        />
+      </svg>
+      <div style={{ position: 'absolute', textAlign: 'center' }}>
+        <span style={{ fontSize: '1.25rem', fontWeight: 800, color, fontFamily: 'var(--font-heading)', lineHeight: 1 }}>
+          {score || 0}
+        </span>
+        <div style={{ fontSize: '0.62rem', color: '#777A96', fontWeight: 600 }}>/ 100</div>
+      </div>
+    </div>
+  );
+}
 
 export default function RiskAnalysis() {
   const { user, logout } = useAuth();
@@ -79,59 +119,69 @@ export default function RiskAnalysis() {
         </header>
 
         <div className="dashboard-content">
-          {/* Metrics Grid */}
+          {/* Top KPI Cards */}
           <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
-            <div className="stat-card">
+            <div className="stat-card" style={{ borderTop: '3px solid #7957F5' }}>
               <span className="stat-card-title">Assessed Returns</span>
               <span className="stat-card-value">{totalAssessed}</span>
               <span className="stat-card-subtitle">AI risk profiles evaluated</span>
             </div>
-            <div className="stat-card" style={{ borderLeft: '4px solid var(--danger)' }}>
+            <div className="stat-card" style={{ borderTop: '3px solid #EF4444' }}>
               <span className="stat-card-title">High Risk Flags</span>
-              <span className="stat-card-value" style={{ color: 'var(--danger)' }}>{highRiskCount}</span>
+              <span className="stat-card-value" style={{ color: '#DC2626' }}>{highRiskCount}</span>
               <span className="stat-card-subtitle">Suspected return fraud / swap</span>
             </div>
-            <div className="stat-card" style={{ borderLeft: '4px solid var(--warning)' }}>
+            <div className="stat-card" style={{ borderTop: '3px solid #F59E0B' }}>
               <span className="stat-card-title">Medium Suspicion</span>
-              <span className="stat-card-value" style={{ color: 'var(--warning)' }}>{medRiskCount}</span>
-              <span className="stat-card-subtitle">Secondary inspection advised</span>
+              <span className="stat-card-value" style={{ color: '#D97706' }}>{medRiskCount}</span>
+              <span className="stat-card-subtitle">Secondary physical audit advised</span>
             </div>
-            <div className="stat-card" style={{ borderLeft: '4px solid var(--success)' }}>
+            <div className="stat-card" style={{ borderTop: '3px solid #10B981' }}>
               <span className="stat-card-title">Low Risk Verified</span>
-              <span className="stat-card-value" style={{ color: 'var(--success)' }}>{lowRiskCount}</span>
-              <span className="stat-card-subtitle">Safe for auto-refund</span>
+              <span className="stat-card-value" style={{ color: '#059669' }}>{lowRiskCount}</span>
+              <span className="stat-card-subtitle">Safe for auto-approval</span>
             </div>
           </div>
 
           {/* Model Transparency Explainer Box */}
-          <div className="card" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.8))' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-              <BrainCircuit size={18} style={{ color: 'var(--primary-light)' }} />
-              How the Explainable Risk Engine Scores Parcels (0 - 100)
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem', borderRadius: '6px' }}>
-                <span style={{ fontWeight: 600, color: 'var(--primary-light)' }}>1. Buyer Frequency (30%)</span>
-                <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem', fontSize: '0.8rem' }}>
-                  Tracks repeated returns from the same customer name or shipping address across your store.
+          <div className="card" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, #11142B 0%, #1E1B4B 100%)', color: '#FFFFFF', border: '1px solid rgba(121, 87, 245, 0.3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #7957F5, #42D9E8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <BrainCircuit size={20} color="#FFFFFF" />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF' }}>
+                  How the Explainable Risk Engine Evaluates Every Parcel (0 – 100)
+                </h3>
+                <p style={{ fontSize: '0.825rem', color: '#D1D2E4' }}>
+                  Transparent multi-variable scoring model with zero black-box obscurity.
                 </p>
               </div>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem', borderRadius: '6px' }}>
-                <span style={{ fontWeight: 600, color: 'var(--primary-light)' }}>2. Category & Value (25%)</span>
-                <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem', fontSize: '0.8rem' }}>
-                  Higher weight assigned to high-ticket electronics, jewelry, and high-fraud categories.
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '0.85rem 1rem', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontWeight: 700, color: '#42D9E8', fontSize: '0.85rem' }}>1. Customer Return Frequency (30%)</div>
+                <p style={{ color: '#B4B6CD', marginTop: '0.25rem', fontSize: '0.78rem', lineHeight: '1.4' }}>
+                  Cross-checks repeat return occurrences from the same buyer across all store shipments.
                 </p>
               </div>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem', borderRadius: '6px' }}>
-                <span style={{ fontWeight: 600, color: 'var(--primary-light)' }}>3. Visual Disparity (25%)</span>
-                <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem', fontSize: '0.8rem' }}>
-                  OpenCV histogram and structural similarity comparing dispatch photo vs return photo.
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '0.85rem 1rem', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontWeight: 700, color: '#9B7DFF', fontSize: '0.85rem' }}>2. Category & Item Value (25%)</div>
+                <p style={{ color: '#B4B6CD', marginTop: '0.25rem', fontSize: '0.78rem', lineHeight: '1.4' }}>
+                  High-ticket apparel, consumer electronics, and jewelry carry higher risk weighting.
                 </p>
               </div>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem', borderRadius: '6px' }}>
-                <span style={{ fontWeight: 600, color: 'var(--primary-light)' }}>4. Physical Audit (20%)</span>
-                <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem', fontSize: '0.8rem' }}>
-                  Missing security tags, tampered seals, or swapped merchandise recorded during inspection.
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '0.85rem 1rem', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontWeight: 700, color: '#42D9E8', fontSize: '0.85rem' }}>3. OpenCV Visual Disparity (25%)</div>
+                <p style={{ color: '#B4B6CD', marginTop: '0.25rem', fontSize: '0.78rem', lineHeight: '1.4' }}>
+                  Histogram correlation & SSIM pixel comparison between dispatch photo vs return photo.
+                </p>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '0.85rem 1rem', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontWeight: 700, color: '#9B7DFF', fontSize: '0.85rem' }}>4. Physical Inspection Audit (20%)</div>
+                <p style={{ color: '#B4B6CD', marginTop: '0.25rem', fontSize: '0.78rem', lineHeight: '1.4' }}>
+                  Missing barcode tags, tampered void tape, broken seals, or swapped garments detected.
                 </p>
               </div>
             </div>
@@ -164,7 +214,7 @@ export default function RiskAnalysis() {
             </div>
           </div>
 
-          {/* Evaluations List */}
+          {/* Risk Evaluations List */}
           {loading ? (
             <div className="empty-state">
               <div className="spinner" style={{ margin: '0 auto 1rem auto' }} />
@@ -174,23 +224,33 @@ export default function RiskAnalysis() {
             <div className="empty-state">
               <ShieldAlert size={48} style={{ color: 'var(--text-muted)', marginBottom: '1rem' }} />
               <h3>No Risk Assessments Found</h3>
-              <p style={{ color: 'var(--text-muted)' }}>
-                {search || filterLevel !== 'ALL' ? 'No evaluations match your filters.' : 'Returns logged will automatically be analyzed by the explainable risk engine.'}
+              <p style={{ color: 'var(--text-secondary)' }}>
+                {search || filterLevel !== 'ALL' ? 'No evaluations match your search filter.' : 'All incoming return requests will automatically be evaluated here.'}
               </p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {filtered.map((item) => {
                 const a = item.assessment;
                 return (
-                  <div key={a.id} className="card" style={{ borderLeft: `5px solid ${a.risk_level === 'HIGH' ? 'var(--danger)' : a.risk_level === 'MEDIUM' ? 'var(--warning)' : 'var(--success)'}` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                          <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--primary-light)' }}>
+                  <div 
+                    key={a.id} 
+                    className="card" 
+                    style={{ 
+                      borderLeft: `5px solid ${a.risk_level === 'HIGH' ? '#EF4444' : a.risk_level === 'MEDIUM' ? '#F59E0B' : '#10B981'}`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '1rem'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem' }}>
+                      {/* Left: Metadata */}
+                      <div style={{ flex: 1, minWidth: '260px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--color-violet)' }}>
                             {item.return_ref}
                           </span>
-                          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                             Order: <strong>{item.order_ref}</strong>
                           </span>
                           <span className="badge badge-neutral" style={{ fontSize: '0.75rem' }}>
@@ -202,8 +262,16 @@ export default function RiskAnalysis() {
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <RiskBadge level={a.risk_level} score={a.risk_score} />
+                      {/* Right: Circular Gauge & Actions */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                          <CircularScore score={a.risk_score} level={a.risk_level} />
+                          <div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>Assessed Level</div>
+                            <RiskBadge level={a.risk_level} />
+                          </div>
+                        </div>
+
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                           <Link to={`/inspection?id=${a.return_request_id}`} className="btn btn-secondary btn-sm" title="Side-by-side inspection">
                             <Eye size={14} />
@@ -219,23 +287,26 @@ export default function RiskAnalysis() {
                       </div>
                     </div>
 
-                    {/* Contributing Rule Reasons */}
-                    <div style={{ background: 'var(--bg-input)', padding: '0.85rem 1rem', borderRadius: '6px', marginBottom: '0.75rem' }}>
-                      <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
-                        Triggered Heuristic Flags:
+                    {/* Contributing Rule Factors */}
+                    <div style={{ background: 'var(--bg-surface-subtle)', padding: '0.95rem 1.15rem', borderRadius: 10, border: '1px solid var(--border-subtle)' }}>
+                      <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>
+                        Triggered Heuristic Flags & Disparity Breakdown:
                       </span>
-                      <ul style={{ marginTop: '0.35rem', paddingLeft: '1.25rem', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                      <ul style={{ marginTop: '0.45rem', paddingLeft: '1.25rem', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
                         {a.reasons && a.reasons.map((r, idx) => (
-                          <li key={idx} style={{ marginBottom: '0.2rem' }}>{r}</li>
+                          <li key={idx} style={{ marginBottom: '0.25rem' }}>{r}</li>
                         ))}
                       </ul>
                     </div>
 
-                    {/* Recommended Action */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>
-                        <strong>Action Recommendation:</strong> {a.recommended_action}
-                      </span>
+                    {/* Recommended Verification Action Banner */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', background: '#FFFFFF', padding: '0.75rem 1rem', borderRadius: 8, border: '1px solid var(--border-card)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <ShieldCheck size={18} color="var(--color-violet)" />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                          <strong>Recommended Action:</strong> {a.recommended_action}
+                        </span>
+                      </div>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                         {item.return_date ? `Logged: ${item.return_date}` : ''}
                       </span>

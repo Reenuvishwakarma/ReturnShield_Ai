@@ -4,32 +4,35 @@ import { dashboardService } from '../services/api';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import RiskBadge from '../components/RiskBadge';
+import { motion } from 'framer-motion';
 import { 
-  Package, 
-  ShoppingCart, 
-  RotateCcw, 
-  AlertTriangle, 
-  ShieldAlert, 
-  IndianRupee, 
-  ArrowRight, 
-  Clock, 
-  CheckCircle2,
-  TrendingUp,
-  FileText
+  Package, ShoppingCart, RotateCcw, AlertTriangle, ShieldAlert,
+  IndianRupee, ArrowRight, Clock, CheckCircle2, TrendingUp, FileText
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell 
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
 import { Link } from 'react-router-dom';
 import './Dashboard.css';
+
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
+const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
+
+const DarkTooltip = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{
+      background: '#1A1D3A', border: '1px solid rgba(121, 87, 245, 0.3)',
+      borderRadius: '10px', padding: '0.6rem 0.9rem', fontSize: '0.82rem',
+      color: '#F3F4F9', boxShadow: '0 8px 24px rgba(17,20,43,0.3)'
+    }}>
+      {label && <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '0.25rem', fontSize: '0.75rem' }}>{label}</p>}
+      {payload.map((p, i) => (
+        <p key={i} style={{ color: p.color || '#7957F5', fontWeight: 600 }}>{p.name}: {p.value}</p>
+      ))}
+    </div>
+  );
+};
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -50,16 +53,12 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
+  useEffect(() => { fetchDashboard(); }, []);
 
   return (
     <div className="dashboard-layout">
       <Sidebar user={user} onLogout={logout} />
-
       <main className="dashboard-main">
-        {/* Top Header */}
         <header className="dashboard-topbar">
           <div>
             <h1 className="dashboard-greeting">Seller Command Center</h1>
@@ -89,46 +88,27 @@ export default function Dashboard() {
         ) : (
           <div className="dashboard-content">
             {/* KPI Stat Cards Grid */}
-            <div className="stats-grid">
-              <StatCard
-                title="Total Orders"
-                value={data?.total_orders || 0}
-                icon={ShoppingCart}
-                subtitle="All tracked marketplace orders"
-              />
-              <StatCard
-                title="Total Returns"
-                value={data?.total_returns || 0}
-                icon={RotateCcw}
-                subtitle={`Return Rate: ${data?.return_rate || 0}%`}
-              />
-              <StatCard
-                title="Suspicious Returns"
-                value={data?.suspicious_returns || 0}
-                icon={AlertTriangle}
-                trend="High Risk"
-                trendType="negative"
-                subtitle="Flagged by Explainable AI"
-              />
-              <StatCard
-                title="Verified Damaged"
-                value={data?.verified_damaged || 0}
-                icon={ShieldAlert}
-                subtitle="Physical inspection verified"
-              />
-              <StatCard
-                title="Est. Financial Loss"
-                value={`₹${(data?.estimated_loss || 0).toLocaleString()}`}
-                icon={IndianRupee}
-                trendType="negative"
-                subtitle="Disputed or damaged inventory"
-              />
-            </div>
+            <motion.div className="stats-grid" variants={staggerContainer} initial="hidden" animate="visible">
+              <motion.div variants={fadeUp}>
+                <StatCard title="Total Orders" value={data?.total_orders || 0} icon={ShoppingCart} accent="violet" subtitle="All tracked marketplace orders" />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Total Returns" value={data?.total_returns || 0} icon={RotateCcw} accent="cyan" subtitle={`Return Rate: ${data?.return_rate || 0}%`} />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Suspicious Returns" value={data?.suspicious_returns || 0} icon={AlertTriangle} accent="rose" trend="High Risk" trendType="negative" subtitle="Flagged by Explainable AI" />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Verified Damaged" value={data?.verified_damaged || 0} icon={ShieldAlert} accent="amber" subtitle="Physical inspection verified" />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Est. Financial Loss" value={`₹${(data?.estimated_loss || 0).toLocaleString()}`} icon={IndianRupee} accent="rose" trendType="negative" subtitle="Disputed or damaged inventory" />
+              </motion.div>
+            </motion.div>
 
             {/* Charts Row */}
             <div className="charts-grid">
-              {/* Monthly Return Trend */}
-              <div className="card chart-card">
+              <motion.div className="card chart-card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 }}>
                 <div className="chart-header">
                   <h3>Monthly Return Trends</h3>
                   <span className="badge badge-neutral">Database Driven</span>
@@ -136,19 +116,22 @@ export default function Dashboard() {
                 <div className="chart-wrapper">
                   <ResponsiveContainer width="100%" height={240}>
                     <BarChart data={data?.trend_data || []}>
-                      <XAxis dataKey="month" stroke="#94a3b8" />
-                      <YAxis stroke="#94a3b8" allowDecimals={false} />
-                      <Tooltip 
-                        contentStyle={{ background: '#0f172a', border: 'none', borderRadius: '8px', color: '#fff' }} 
-                      />
-                      <Bar dataKey="returns" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                      <defs>
+                        <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#7957F5" stopOpacity={0.9} />
+                          <stop offset="100%" stopColor="#42D9E8" stopOpacity={0.7} />
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="month" stroke="#777A96" fontSize={12} tickLine={false} />
+                      <YAxis stroke="#777A96" fontSize={12} allowDecimals={false} tickLine={false} axisLine={false} />
+                      <Tooltip content={<DarkTooltip />} />
+                      <Bar dataKey="returns" fill="url(#barGradient)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Risk Distribution Chart */}
-              <div className="card chart-card">
+              <motion.div className="card chart-card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.35 }}>
                 <div className="chart-header">
                   <h3>Return Risk Distribution</h3>
                   <span className="badge badge-neutral">AI Evaluated</span>
@@ -158,19 +141,14 @@ export default function Dashboard() {
                     <PieChart>
                       <Pie
                         data={data?.risk_distribution || []}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={85}
-                        paddingAngle={5}
+                        dataKey="value" nameKey="name"
+                        cx="50%" cy="50%" innerRadius={60} outerRadius={85} paddingAngle={5}
                       >
                         {(data?.risk_distribution || []).map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip content={<DarkTooltip />} />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="pie-legend">
@@ -182,13 +160,12 @@ export default function Dashboard() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Recent Return Requests & Live Alerts */}
             <div className="recent-grid">
-              {/* Recent Return Requests Table */}
-              <div className="table-container">
+              <motion.div className="table-container" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4 }}>
                 <div className="table-header">
                   <h3 className="heading-card">Recent Return Requests</h3>
                   <Link to="/returns" className="btn btn-outline btn-sm">
@@ -197,33 +174,25 @@ export default function Dashboard() {
                 </div>
 
                 {data?.recent_returns?.length === 0 ? (
-                  <div className="empty-state">
-                    <p>No returns logged yet.</p>
-                  </div>
+                  <div className="empty-state"><p>No returns logged yet.</p></div>
                 ) : (
                   <table className="custom-table">
                     <thead>
                       <tr>
-                        <th>Return Ref</th>
-                        <th>Order</th>
-                        <th>Product</th>
-                        <th>Reason</th>
-                        <th>Risk Level</th>
-                        <th>Action</th>
+                        <th>Return Ref</th><th>Order</th><th>Product</th>
+                        <th>Reason</th><th>Risk Level</th><th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data?.recent_returns?.map((ret) => (
                         <tr key={ret.id}>
-                          <td><strong>{ret.return_ref}</strong></td>
-                          <td>{ret.order_ref}</td>
-                          <td>{ret.product_name}</td>
-                          <td>{ret.return_reason}</td>
+                          <td><strong style={{ color: 'var(--color-violet)', fontFamily: 'monospace' }}>{ret.return_ref}</strong></td>
+                          <td style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{ret.order_ref}</td>
+                          <td style={{ fontWeight: 500 }}>{ret.product_name}</td>
+                          <td><span className="badge badge-neutral" style={{ fontSize: '0.78rem' }}>{ret.return_reason}</span></td>
+                          <td><RiskBadge level={ret.risk_level} score={ret.risk_score} /></td>
                           <td>
-                            <RiskBadge level={ret.risk_level} score={ret.risk_score} />
-                          </td>
-                          <td>
-                            <Link to={`/inspection/${ret.id}`} className="btn btn-secondary btn-sm">
+                            <Link to={`/inspection?id=${ret.id}`} className="btn btn-secondary btn-sm">
                               Inspect
                             </Link>
                           </td>
@@ -232,10 +201,9 @@ export default function Dashboard() {
                     </tbody>
                   </table>
                 )}
-              </div>
+              </motion.div>
 
-              {/* Recent Risk Alerts Feed */}
-              <div className="card alerts-card">
+              <motion.div className="card alerts-card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.45 }}>
                 <div className="chart-header">
                   <h3>Recent Risk Alerts</h3>
                   <Clock size={16} className="text-muted" />
@@ -243,7 +211,7 @@ export default function Dashboard() {
                 <div className="alerts-list">
                   {data?.recent_alerts?.length === 0 ? (
                     <div className="empty-state" style={{ padding: '2rem 1rem' }}>
-                      <CheckCircle2 size={32} style={{ color: '#10b981', margin: '0 auto 0.5rem auto' }} />
+                      <CheckCircle2 size={32} style={{ color: 'var(--success)', margin: '0 auto 0.5rem auto' }} />
                       <p>All returns verified with no open anomalies.</p>
                     </div>
                   ) : (
@@ -256,7 +224,7 @@ export default function Dashboard() {
                     ))
                   )}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         )}

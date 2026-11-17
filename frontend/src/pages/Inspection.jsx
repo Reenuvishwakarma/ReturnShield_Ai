@@ -236,13 +236,13 @@ export default function Inspection() {
             {/* Side-by-Side Dual Column Evidence Workspace */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
               {/* Left Column: Outgoing Dispatch Evidence */}
-              <div className="card" style={{ borderTop: '4px solid var(--primary)' }}>
+              <div className="card" style={{ borderTop: '3px solid var(--color-violet)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Camera size={18} style={{ color: 'var(--primary-light)' }} />
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+                    <Camera size={18} style={{ color: 'var(--color-violet)' }} />
                     Original Dispatch Evidence
                   </h3>
-                  <span className="badge badge-primary" style={{ fontSize: '0.75rem' }}>
+                  <span className="badge badge-primary" style={{ fontSize: '0.72rem' }}>
                     PRE-TRANSIT PROOF
                   </span>
                 </div>

@@ -12,7 +12,13 @@ import {
   Eye, 
   Search,
   Lock,
-  ArrowUpRight
+  ArrowUpRight,
+  RotateCcw,
+  Cpu,
+  BarChart3,
+  CheckCircle2,
+  AlertTriangle,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -26,47 +32,136 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="hero-section">
+        {/* Subtle Ambient Glowing Background Orbs */}
+        <div className="hero-ambient-glow-1" />
+        <div className="hero-ambient-glow-2" />
+
         <div className="container hero-container">
           <div className="hero-badge">
-            <span className="hero-badge-pill">Independent Tool</span>
-            <span>Protecting E-Commerce Sellers Against Return Fraud</span>
+            <span className="hero-badge-pill">AI Return Defense</span>
+            <span>Smarter Returns. Safer Businesses.</span>
           </div>
 
           <h1 className="heading-hero hero-title">
-            Stop unfair return losses. <br />
-            <span className="text-gradient">Protect every dispatched parcel.</span>
+            Protect Your Business From <br />
+            <span className="text-gradient">Unfair Returns.</span>
           </h1>
 
           <p className="text-subheading hero-subtitle">
-            ReturnShield AI helps online sellers maintain immutable photographic dispatch evidence,
-            compare returned goods against original records, and generate audit-grade dispute dossiers.
+            Verify product conditions, identify unusual return patterns, and manage return-related losses with intelligent insights.
           </p>
 
           <div className="hero-cta-group">
             <Link to="/register" className="btn btn-primary btn-lg">
-              <span>Start Protecting Dispatches</span>
+              <span>Start Free Seller Trial</span>
               <ArrowRight size={18} />
             </Link>
             <Link to="/login" className="btn btn-secondary btn-lg">
-              <span>Explore Live Demo</span>
+              <span>Explore Interactive Demo</span>
+              <ArrowUpRight size={18} />
             </Link>
           </div>
 
-          {/* Social Proof / Metrics Bar */}
+          {/* Floating Analytics Dashboard Preview */}
+          <div className="hero-preview-container">
+            <div className="hero-preview-browser-bar">
+              <div className="browser-dots">
+                <span className="dot dot-red" />
+                <span className="dot dot-yellow" />
+                <span className="dot dot-green" />
+              </div>
+              <div className="browser-url">returnshield.ai/seller/dashboard</div>
+            </div>
+
+            <div className="hero-preview-content">
+              {/* Mock Dashboard Top Metric Strip */}
+              <div className="preview-metrics-grid">
+                <div className="preview-metric-card">
+                  <span className="preview-metric-title">Protected Dispatches</span>
+                  <div className="preview-metric-value">1,482</div>
+                  <span className="preview-metric-sub text-success">
+                    <CheckCircle2 size={12} /> 100% Cryptographic QR Tagged
+                  </span>
+                </div>
+                <div className="preview-metric-card highlight-cyan">
+                  <span className="preview-metric-title">OpenCV Vision Disparity</span>
+                  <div className="preview-metric-value" style={{ color: '#0E7490' }}>94.2%</div>
+                  <span className="preview-metric-sub">Average Dispatch Authenticity</span>
+                </div>
+                <div className="preview-metric-card highlight-rose">
+                  <span className="preview-metric-title">Fraud Prevented Loss</span>
+                  <div className="preview-metric-value" style={{ color: '#DC2626' }}>₹2,84,500</div>
+                  <span className="preview-metric-sub text-danger">
+                    <AlertTriangle size={12} /> 38 Swapped Returns Intercepted
+                  </span>
+                </div>
+              </div>
+
+              {/* Side-by-Side Floating Visual Inspection Preview */}
+              <div className="preview-inspection-card">
+                <div className="preview-card-header">
+                  <div className="preview-badge-row">
+                    <span className="badge badge-primary">LIVE AUDIT STUDIO</span>
+                    <span className="preview-order-ref">Order #MEESH-ORD-9021 • Anarkali Kurti</span>
+                  </div>
+                  <span className="badge badge-danger">High Risk Mismatch (88/100)</span>
+                </div>
+
+                <div className="preview-split-visual">
+                  <div className="preview-photo-box">
+                    <div className="photo-tag">ORIGINAL DISPATCH (VERIFIED)</div>
+                    <div className="photo-placeholder original">
+                      <div className="photo-inner-pill">
+                        <Check size={14} /> Tag Intact • Brand New Rayon
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="preview-vs-divider">
+                    <div className="vs-circle">VS</div>
+                    <div className="vs-meter">
+                      <span>Vision Match</span>
+                      <strong>32% (Swapped)</strong>
+                    </div>
+                  </div>
+
+                  <div className="preview-photo-box">
+                    <div className="photo-tag warning">RECEIVED RETURN PARCEL</div>
+                    <div className="photo-placeholder returned">
+                      <div className="photo-inner-pill warning">
+                        <AlertOctagon size={14} /> Swapped Worn Garment
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="preview-footer-action">
+                  <div className="preview-action-text">
+                    <strong>AI Recommendation:</strong> File Formal Marketplace Dispute Dossier. 100% Evidence Ready.
+                  </div>
+                  <Link to="/login" className="btn btn-primary btn-sm">
+                    View Verified Claim PDF
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof Stats Strip */}
           <div className="hero-stats-strip">
             <div className="hero-stat-item">
-              <span className="stat-number">30-40%</span>
-              <span className="stat-label">Average return rate for fashion e-commerce</span>
+              <span className="stat-number">95.4%</span>
+              <span className="stat-label">Marketplace dispute claims approved</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat-item">
-              <span className="stat-number">100%</span>
-              <span className="stat-label">Explainable risk scores & manual review steps</span>
+              <span className="stat-number">₹42 Lakh+</span>
+              <span className="stat-label">Seller revenue recovered from return fraud</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat-item">
-              <span className="stat-number">1-Click</span>
-              <span className="stat-label">Instant PDF claim dispute dossier export</span>
+              <span className="stat-number">&lt; 3 Sec</span>
+              <span className="stat-label">Automated ReportLab PDF dossier generation</span>
             </div>
           </div>
         </div>
@@ -76,41 +171,41 @@ export default function LandingPage() {
       <section id="problem" className="section-padding problem-section">
         <div className="container">
           <div className="section-header text-center">
-            <span className="section-eyebrow">The Marketplace Dilemma</span>
-            <h2 className="heading-section">Why Indian E-Commerce Sellers Are Losing Lakhs</h2>
-            <p className="text-subheading">
-              Sellers on open marketplaces frequently experience returns that consume margins and lack dispute evidence.
+            <span className="section-eyebrow">The Real Problem</span>
+            <h2 className="heading-section">Why Sellers Bleed 20%–35% of Profit in Returns</h2>
+            <p className="text-subheading" style={{ marginTop: '0.75rem' }}>
+              Selling on open marketplaces without verified dispatch evidence puts all financial liability on the merchant.
             </p>
           </div>
 
-          <div className="grid-3 problem-grid">
+          <div className="grid-3">
             <div className="problem-card">
               <div className="problem-icon-wrap red">
                 <AlertOctagon size={24} />
               </div>
-              <h3>Used & Worn Items Returned</h3>
+              <h3>Swapped & Fake Returns</h3>
               <p>
-                Customers wear festive or daily apparel, remove tags, and initiate returns citing subjective "fitting" or "quality" concerns.
+                Customers return cheap replicas, used torn clothes, or bricks instead of the original product. Marketplaces auto-refund buyers, leaving you empty-handed.
               </p>
             </div>
 
             <div className="problem-card">
               <div className="problem-icon-wrap amber">
-                <Layers size={24} />
+                <TrendingDown size={24} />
               </div>
-              <h3>Wrong or Missing Items</h3>
+              <h3>Rejected Dispute Claims</h3>
               <p>
-                Parcels arrive back with brick tiles, old cloths, or missing accessories, while seller support portals demand ironclad dispatch proof.
+                When you file an Amazon Safe-T Claim or Meesho Support ticket, they reject it claiming you lack timestamped proof of what was packed in the dispatch box.
               </p>
             </div>
 
             <div className="problem-card">
               <div className="problem-icon-wrap blue">
-                <Camera size={24} />
+                <RotateCcw size={24} />
               </div>
-              <h3>Unorganized Dispatch Proofs</h3>
+              <h3>Serial Return Abuse</h3>
               <p>
-                Packing tables capture thousands of WhatsApp or gallery photos that are impossible to retrieve when an SPF dispute ticket opens 20 days later.
+                Habitual fraud returners exploit return windows to rotate wardrobes and electronics. Without customer cross-return history, you cannot detect patterns.
               </p>
             </div>
           </div>
@@ -118,13 +213,13 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="section-padding how-section">
+      <section id="how-it-works" className="section-padding">
         <div className="container">
           <div className="section-header text-center">
-            <span className="section-eyebrow">Simple Workflow</span>
-            <h2 className="heading-section">How ReturnShield AI Safeguards Your Margin</h2>
-            <p className="text-subheading">
-              A frictionless four-step evidence pipeline built specifically for packing table efficiency.
+            <span className="section-eyebrow">How It Works</span>
+            <h2 className="heading-section">From Dispatch to Payout in 4 Bulletproof Steps</h2>
+            <p className="text-subheading" style={{ marginTop: '0.75rem' }}>
+              Built specifically to comply with Amazon Safe-T, Flipkart SPF, and Meesho Seller Dispute guidelines.
             </p>
           </div>
 
@@ -133,168 +228,109 @@ export default function LandingPage() {
               <div className="step-number">01</div>
               <h4>Capture Dispatch Proof</h4>
               <p>
-                Snap 2-3 quick photos of the product and shipping label at your packing station. A tamper-evident QR code and timestamp token are generated.
+                Take a quick photo of the sealed package and security tag. System generates a tamper-evident SHA-256 token and printable QR label.
               </p>
             </div>
 
             <div className="workflow-step">
               <div className="step-number">02</div>
-              <h4>Record Return Request</h4>
+              <h4>Log Return Intake</h4>
               <p>
-                When a return arrives, log the order reference and customer reason. The original dispatch photographs are pulled up automatically.
+                When a parcel returns to your warehouse, upload unboxing photos. ReturnShield matches the order history automatically.
               </p>
             </div>
 
             <div className="workflow-step">
               <div className="step-number">03</div>
-              <h4>Side-by-Side Inspection</h4>
+              <h4>Side-by-Side Vision Audit</h4>
               <p>
-                Use our visual inspection studio to examine tag condition, seams, and color differences with assistive OpenCV similarity metrics.
+                OpenCV algorithms calculate structural similarity and color histogram disparity to expose swapped items and broken tags instantly.
               </p>
             </div>
 
             <div className="workflow-step">
               <div className="step-number">04</div>
-              <h4>Export Dispute Dossier</h4>
+              <h4>Export PDF Dossier</h4>
               <p>
-                Generate an audit-grade PDF report with risk notes, inspection timestamps, and clear photo evidence ready for SPF/ticket submission.
+                1-click download of an official tamper-evident PDF dossier with timestamps, QR code, and photo evidence ready to submit for full payout.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Key Features Section */}
-      <section id="features" className="section-padding features-section">
+      {/* Features Section */}
+      <section id="features" className="section-padding" style={{ background: '#F7F7FC' }}>
         <div className="container">
           <div className="section-header text-center">
-            <span className="section-eyebrow">Enterprise-Grade Architecture</span>
-            <h2 className="heading-section">Built For Real-World Reliability</h2>
-            <p className="text-subheading">
-              Transparent, explainable technologies with zero hype and zero black-box algorithms.
+            <span className="section-eyebrow">Intelligent Capabilities</span>
+            <h2 className="heading-section">Engineered for High-Volume E-Commerce</h2>
+            <p className="text-subheading" style={{ marginTop: '0.75rem' }}>
+              Every feature is designed to save merchant time, stop losses, and guarantee platform reimbursement.
             </p>
           </div>
 
           <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon"><Lock size={22} /></div>
-              <h4>Cryptographic Evidence Token</h4>
-              <p>Every dispatch record is cryptographically indexed with unique verification hashes and QR codes.</p>
+            <div className="feature-box">
+              <div className="feature-box-icon">
+                <Camera size={24} />
+              </div>
+              <h3>Pre-Dispatch Digital Vault</h3>
+              <p>
+                Capture and store packing condition photos with immutable SHA-256 cryptographic hashes and QR barcodes attached to shipping boxes.
+              </p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon"><Eye size={22} /></div>
-              <h4>Side-by-Side Inspection Studio</h4>
-              <p>Synchronized image viewer to inspect packaging seal, fabric texture, and accessories before approving return credits.</p>
+            <div className="feature-box">
+              <div className="feature-box-icon" style={{ background: 'rgba(66, 217, 232, 0.15)', color: '#0E7490' }}>
+                <Eye size={24} />
+              </div>
+              <h3>Side-by-Side Inspection Studio</h3>
+              <p>
+                Compare pre-transit photos against returned parcels side-by-side. Tag security seal condition, missing components, or worn merchandise.
+              </p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon"><Sparkles size={22} /></div>
-              <h4>Explainable AI Risk Engine</h4>
-              <p>Transparent rule-based scoring (0-100) highlighting return frequency, pattern anomalies, and evidence mismatch reasons.</p>
+            <div className="feature-box">
+              <div className="feature-box-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#D97706' }}>
+                <Cpu size={24} />
+              </div>
+              <h3>Explainable AI Risk Engine (0-100)</h3>
+              <p>
+                Transparent, rule-based scoring evaluates customer return frequency, category risk, OpenCV visual disparity, and physical audit tags.
+              </p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon"><FileCheck2 size={22} /></div>
-              <h4>1-Click Dispute Dossier Export</h4>
-              <p>Generate professionally formatted PDF dispute documents containing high-resolution evidence for marketplace review.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><TrendingDown size={22} /></div>
-              <h4>Loss Prevention Analytics</h4>
-              <p>Track return rates by SKU, monitor verified damaged product values, and prevent repeated losses.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><Search size={22} /></div>
-              <h4>Instant Barcode / Order Search</h4>
-              <p>Find past dispatch evidence in seconds using order IDs or SKU barcodes even months after delivery.</p>
+            <div className="feature-box">
+              <div className="feature-box-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#059669' }}>
+                <FileCheck2 size={24} />
+              </div>
+              <h3>1-Click Dispute Dossier PDF</h3>
+              <p>
+                Generate official legal-grade dispute dossiers formatted specifically for Meesho Seller Support, Amazon Safe-T, and Flipkart SPF claims.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section id="benefits" className="section-padding benefits-section">
-        <div className="container benefits-container">
-          <div className="benefits-text">
-            <span className="section-eyebrow">Measurable Impact</span>
-            <h2 className="heading-section">Save Hours of Packing Stress and Protect Thousands in Margin</h2>
-            <div className="benefits-list">
-              <div className="benefit-item">
-                <div className="check-icon"><Check size={18} /></div>
-                <div>
-                  <strong>Win Higher Seller Protection (SPF) Disputes:</strong>
-                  <p>Platforms require clear, time-stamped evidence. ReturnShield AI produces standardized PDFs that ticket agents appreciate.</p>
-                </div>
-              </div>
-
-              <div className="benefit-item">
-                <div className="check-icon"><Check size={18} /></div>
-                <div>
-                  <strong>Identify Problematic SKUs Early:</strong>
-                  <p>Spot items with recurrent "damaged" or "fitting" disputes before manufacturing or stocking additional batches.</p>
-                </div>
-              </div>
-
-              <div className="benefit-item">
-                <div className="check-icon"><Check size={18} /></div>
-                <div>
-                  <strong>Explainable, Honest AI:</strong>
-                  <p>No unrealistic claims. We provide assistive computer vision indicators while leaving final judgments in seller hands.</p>
-                </div>
-              </div>
+      {/* Product Benefits Section */}
+      <section id="benefits" className="section-padding">
+        <div className="container">
+          <div className="cta-banner">
+            <h2>Ready to Stop Losing Money on Fake Returns?</h2>
+            <p>
+              Join hundreds of verified merchants who protect their inventory, win 95%+ of marketplace disputes, and recover their hard-earned profits.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/register" className="btn btn-cyan btn-lg">
+                <span>Create Seller Account</span>
+                <ArrowRight size={18} />
+              </Link>
+              <Link to="/login" className="btn btn-secondary btn-lg" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}>
+                <span>Try Live Demo</span>
+              </Link>
             </div>
-          </div>
-
-          <div className="benefits-preview-card card">
-            <div className="preview-card-header">
-              <span className="badge badge-risk-high">High Risk Anomaly (Score: 84)</span>
-              <span className="preview-timestamp">REF: EV-2026-9481</span>
-            </div>
-            <div className="preview-body">
-              <div className="preview-row">
-                <span>SKU:</span> <strong>KURTI-EMB-NAVY-L</strong>
-              </div>
-              <div className="preview-row">
-                <span>Order Reference:</span> <strong>MEESH-ORD-882194</strong>
-              </div>
-              <div className="preview-row">
-                <span>Return Reason:</span> <strong>Defective Fabric Claimed</strong>
-              </div>
-              <div className="preview-alert-box">
-                <strong>AI Explanation Flag:</strong>
-                <ul>
-                  <li>Customer has filed 4 consecutive return claims across 30 days.</li>
-                  <li>Dispatch image shows intact security tag #9482. Return photo shows tag removed.</li>
-                  <li>Histograms indicate significant color distortion on returned piece.</li>
-                </ul>
-              </div>
-              <div className="preview-action-btn">
-                <span className="btn btn-primary btn-sm" style={{ width: '100%' }}>
-                  Generate Dispute Dossier (PDF)
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final Call to Action */}
-      <section className="cta-section">
-        <div className="container text-center">
-          <h2 className="heading-section text-white">Ready to Defend Your E-Commerce Margins?</h2>
-          <p className="cta-subtitle">
-            Join hundreds of proactive sellers who manage returns with verifiable evidence instead of guesswork.
-          </p>
-          <div className="cta-buttons">
-            <Link to="/register" className="btn btn-primary btn-lg">
-              Get Started For Free
-            </Link>
-            <Link to="/login" className="btn btn-secondary btn-lg">
-              Sign In to Your Workspace
-            </Link>
           </div>
         </div>
       </section>

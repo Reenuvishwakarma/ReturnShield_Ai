@@ -3,35 +3,36 @@ import { useAuth } from '../context/AuthContext';
 import { dashboardService } from '../services/api';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
+import { motion } from 'framer-motion';
 import { 
-  BarChart3, 
-  TrendingUp, 
-  IndianRupee, 
-  AlertTriangle, 
-  RotateCcw, 
-  ShoppingCart, 
-  ShieldAlert, 
-  PieChart as PieIcon,
-  Package,
-  ArrowUpRight,
-  ShieldCheck
+  TrendingUp, IndianRupee, AlertTriangle, RotateCcw, ShoppingCart,
+  PieChart as PieIcon, Package, ShieldCheck
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell, 
-  CartesianGrid, 
-  Legend 
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
+  PieChart, Pie, Cell, CartesianGrid, Legend
 } from 'recharts';
 import './Dashboard.css';
 
-const PIE_COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#8b5cf6'];
+const PIE_COLORS = ['#7957F5', '#42D9E8', '#F59E0B', '#10B981', '#EC4899', '#8B5CF6'];
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
+const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{
+      background: '#1A1D3A', border: '1px solid rgba(121, 87, 245, 0.3)',
+      borderRadius: '10px', padding: '0.6rem 0.9rem', fontSize: '0.82rem',
+      color: '#F3F4F9', boxShadow: '0 8px 24px rgba(17,20,43,0.3)'
+    }}>
+      {label && <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '0.25rem', fontSize: '0.75rem' }}>{label}</p>}
+      {payload.map((p, i) => (
+        <p key={i} style={{ color: p.color || '#7957F5', fontWeight: 600 }}>{p.name}: {p.value}</p>
+      ))}
+    </div>
+  );
+};
 
 export default function Analytics() {
   const { user, logout } = useAuth();
@@ -43,34 +44,27 @@ export default function Analytics() {
     try {
       setLoading(true);
       const [sumRes, deepRes] = await Promise.all([
-        dashboardService.getSummary(),
-        dashboardService.getDeepAnalytics()
+        dashboardService.getSummary(), dashboardService.getDeepAnalytics()
       ]);
       setSummary(sumRes.data);
       setDeep(deepRes.data);
     } catch (err) {
-      console.error("Failed to load analytics:", err);
+      console.error('Failed to load analytics:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadAnalytics();
-  }, []);
+  useEffect(() => { loadAnalytics(); }, []);
 
   return (
     <div className="dashboard-layout">
       <Sidebar user={user} onLogout={logout} />
-
       <main className="dashboard-main">
-        {/* Header */}
         <header className="dashboard-topbar">
           <div>
             <h1 className="dashboard-greeting">Loss Analytics & Return Telemetry</h1>
-            <p className="dashboard-subtitle">
-              Aggregate return ratios, claim recovery totals, and high-frequency defect patterns.
-            </p>
+            <p className="dashboard-subtitle">Aggregate return ratios, claim recovery totals, and high-frequency defect patterns.</p>
           </div>
         </header>
 
@@ -81,71 +75,56 @@ export default function Analytics() {
           </div>
         ) : (
           <div className="dashboard-content">
-            {/* Top Stat Cards */}
-            <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
-              <StatCard
-                title="Total Orders"
-                value={summary?.total_orders || 0}
-                icon={ShoppingCart}
-                subtitle="All fulfilled orders"
-              />
-              <StatCard
-                title="Return Rate"
-                value={`${summary?.return_rate || 0}%`}
-                icon={RotateCcw}
-                subtitle={`${summary?.total_returns || 0} total returns`}
-                trend={summary?.return_rate > 15 ? 'up' : 'down'}
-                trendValue={summary?.return_rate > 15 ? 'High' : 'Normal'}
-              />
-              <StatCard
-                title="Suspicious Returns"
-                value={summary?.suspicious_returns || 0}
-                icon={AlertTriangle}
-                subtitle="Flagged by AI Risk Engine"
-                trend="up"
-                trendValue="Review"
-              />
-              <StatCard
-                title="Estimated Loss"
-                value={`₹${summary?.estimated_loss?.toLocaleString() || 0}`}
-                icon={IndianRupee}
-                subtitle="From damaged / swapped returns"
-              />
-            </div>
+            <motion.div className="stats-grid" style={{ marginBottom: '1.75rem' }} variants={staggerContainer} initial="hidden" animate="visible">
+              <motion.div variants={fadeUp}>
+                <StatCard title="Total Orders" value={summary?.total_orders || 0} icon={ShoppingCart} subtitle="All fulfilled orders" accent="violet" />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Return Rate" value={`${summary?.return_rate || 0}%`} icon={RotateCcw}
+                  subtitle={`${summary?.total_returns || 0} total returns`} accent="amber"
+                  trend={summary?.return_rate > 15 ? 'up' : 'down'} trendValue={summary?.return_rate > 15 ? 'High' : 'Normal'} />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Suspicious Returns" value={summary?.suspicious_returns || 0} icon={AlertTriangle}
+                  subtitle="Flagged by AI Risk Engine" accent="rose" trend="up" trendValue="Review" />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <StatCard title="Estimated Loss" value={`₹${summary?.estimated_loss?.toLocaleString() || 0}`}
+                  icon={IndianRupee} subtitle="From damaged / swapped returns" accent="cyan" />
+              </motion.div>
+            </motion.div>
 
-            {/* Charts Row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              {/* Monthly Return Trends */}
-              <div className="card">
+              <motion.div className="card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <TrendingUp size={18} style={{ color: 'var(--primary-light)' }} />
-                    Monthly Return Volume
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+                    <TrendingUp size={18} style={{ color: 'var(--color-violet)' }} /> Monthly Return Volume
                   </h3>
                   <span className="badge badge-neutral" style={{ fontSize: '0.75rem' }}>Recent Months</span>
                 </div>
                 <div style={{ width: '100%', height: 260 }}>
                   <ResponsiveContainer>
                     <BarChart data={summary?.trend_data || []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
-                      <YAxis stroke="var(--text-muted)" fontSize={12} />
-                      <Tooltip 
-                        contentStyle={{ background: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '8px' }}
-                        itemStyle={{ color: 'var(--text-primary)' }}
-                      />
-                      <Bar dataKey="returns" fill="#6366f1" radius={[4, 4, 0, 0]} name="Returns" />
+                      <defs>
+                        <linearGradient id="analyticsBarGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#7957F5" stopOpacity={0.9} />
+                          <stop offset="100%" stopColor="#42D9E8" stopOpacity={0.7} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+                      <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} tickLine={false} />
+                      <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar dataKey="returns" fill="url(#analyticsBarGrad)" radius={[6, 6, 0, 0]} name="Returns" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Reasons Breakdown */}
-              <div className="card">
+              <motion.div className="card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.35 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <PieIcon size={18} style={{ color: 'var(--primary-light)' }} />
-                    Return Reasons Breakdown
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+                    <PieIcon size={18} style={{ color: 'var(--color-cyan)' }} /> Return Reasons Breakdown
                   </h3>
                   <span className="badge badge-neutral" style={{ fontSize: '0.75rem' }}>Customer Stated</span>
                 </div>
@@ -153,24 +132,16 @@ export default function Analytics() {
                   {deep?.reason_distribution && deep.reason_distribution.length > 0 ? (
                     <ResponsiveContainer>
                       <PieChart>
-                        <Pie
-                          data={deep.reason_distribution}
-                          dataKey="count"
-                          nameKey="reason"
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={85}
-                          label={({ name, percent }) => `${name.slice(0, 15)}... ${(percent * 100).toFixed(0)}%`}
-                          labelLine={false}
-                        >
+                        <Pie data={deep.reason_distribution} dataKey="count" nameKey="reason" cx="50%" cy="50%"
+                          outerRadius={85} innerRadius={35} paddingAngle={3}
+                          label={({ percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false}>
                           {deep.reason_distribution.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip 
-                          contentStyle={{ background: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '8px' }}
-                          itemStyle={{ color: 'var(--text-primary)' }}
-                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend iconType="circle" iconSize={8}
+                          formatter={(value) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{value.slice(0, 22)}{value.length > 22 ? '...' : ''}</span>} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -179,34 +150,24 @@ export default function Analytics() {
                     </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </div>
 
-            {/* Product-Wise Return & Loss Table */}
-            <div className="card" style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Package size={18} style={{ color: 'var(--primary-light)' }} />
-                    Product-Level Loss & Return Performance
-                  </h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Track which SKUs suffer from abnormal return frequency and disproportionate financial damage.
-                  </p>
-                </div>
+            <motion.div className="card" style={{ marginBottom: '1.5rem' }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4 }}>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+                  <Package size={18} style={{ color: 'var(--color-violet)' }} /> Product-Level Loss & Return Performance
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Track which SKUs suffer from abnormal return frequency and disproportionate financial damage.
+                </p>
               </div>
-
               <div className="table-container" style={{ margin: 0 }}>
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Product Name</th>
-                      <th>SKU</th>
-                      <th>Dispatched Units</th>
-                      <th>Returned Units</th>
-                      <th>Return Rate</th>
-                      <th>Total Loss Incurred</th>
-                      <th>Risk Status</th>
+                      <th>Product Name</th><th>SKU</th><th>Dispatched</th><th>Returned</th>
+                      <th>Return Rate</th><th>Total Loss</th><th>Risk Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -214,7 +175,7 @@ export default function Analytics() {
                       deep.product_summary.map((p, idx) => (
                         <tr key={idx}>
                           <td style={{ fontWeight: 600 }}>{p.name}</td>
-                          <td style={{ fontFamily: 'monospace', color: 'var(--text-muted)' }}>{p.sku}</td>
+                          <td style={{ fontFamily: 'monospace', color: 'var(--text-muted)', fontSize: '0.82rem' }}>{p.sku}</td>
                           <td>{p.dispatched}</td>
                           <td>{p.returned}</td>
                           <td>
@@ -222,9 +183,7 @@ export default function Analytics() {
                               {p.return_rate}%
                             </span>
                           </td>
-                          <td style={{ fontWeight: 700, color: p.loss > 0 ? 'var(--danger)' : 'var(--text-primary)' }}>
-                            ₹{p.loss.toLocaleString()}
-                          </td>
+                          <td style={{ fontWeight: 700, color: p.loss > 0 ? 'var(--danger)' : 'var(--text-primary)' }}>₹{p.loss.toLocaleString()}</td>
                           <td>
                             {p.return_rate > 25 ? (
                               <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -239,43 +198,31 @@ export default function Analytics() {
                         </tr>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-                          No product return statistics accumulated yet.
-                        </td>
-                      </tr>
+                      <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>No product return statistics accumulated yet.</td></tr>
                     )}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Strategic Loss Reduction Playbook */}
-            <div className="card" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(30, 41, 59, 0.6))', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
+            <motion.div className="card" style={{ background: 'linear-gradient(135deg, rgba(121, 87, 245, 0.06) 0%, rgba(17, 20, 43, 0.5) 100%)', border: '1px solid rgba(121, 87, 245, 0.18)' }}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.45 }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'var(--font-heading)', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
                 🛡️ ReturnShield Automated Recommendations for Your Store
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
-                <div style={{ background: 'var(--bg-card)', padding: '0.85rem', borderRadius: '8px' }}>
-                  <strong style={{ color: 'var(--primary-light)' }}>1. Tag High-Risk SKUs with Tamper-Tape</strong>
-                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.35rem', fontSize: '0.8rem' }}>
-                    For products with over 20% return rate, apply tamper-evident void tape and capture dispatch photo with QR code visible.
-                  </p>
-                </div>
-                <div style={{ background: 'var(--bg-card)', padding: '0.85rem', borderRadius: '8px' }}>
-                  <strong style={{ color: 'var(--primary-light)' }}>2. Fast-Track Dossier Submissions</strong>
-                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.35rem', fontSize: '0.8rem' }}>
-                    Marketplaces require claims within 72 hours of return delivery. Download the ReturnShield PDF dossier immediately upon inspection.
-                  </p>
-                </div>
-                <div style={{ background: 'var(--bg-card)', padding: '0.85rem', borderRadius: '8px' }}>
-                  <strong style={{ color: 'var(--primary-light)' }}>3. Block Serial Returners</strong>
-                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.35rem', fontSize: '0.8rem' }}>
-                    Customers flagged with multiple returns on expensive items should be marked for mandatory unboxing video inspection.
-                  </p>
-                </div>
+                {[
+                  { title: '1. Tag High-Risk SKUs with Tamper-Tape', body: 'For products with over 20% return rate, apply tamper-evident void tape and capture dispatch photo with QR code visible.' },
+                  { title: '2. Fast-Track Dossier Submissions', body: 'Marketplaces require claims within 72 hours of return delivery. Download the ReturnShield PDF dossier immediately upon inspection.' },
+                  { title: '3. Block Serial Returners', body: 'Customers flagged with multiple returns on expensive items should be marked for mandatory unboxing video inspection.' },
+                ].map((item, i) => (
+                  <div key={i} style={{ background: 'var(--bg-card)', padding: '1rem 1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                    <strong style={{ color: 'var(--color-violet)', fontSize: '0.85rem', display: 'block', marginBottom: '0.4rem' }}>{item.title}</strong>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: 1.6 }}>{item.body}</p>
+                  </div>
+                ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </main>

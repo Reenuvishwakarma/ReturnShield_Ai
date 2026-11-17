@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { dispatchService, orderService } from '../services/api';
 import Sidebar from '../components/Sidebar';
-import { Camera, QrCode, Upload, Check, AlertCircle, CheckCircle2, FileText, Image as ImageIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Camera, QrCode, Upload, Check, AlertCircle, CheckCircle2 } from 'lucide-react';
 import './Dashboard.css';
+
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
 
 export default function DispatchVerification() {
   const { user, logout } = useAuth();
@@ -11,7 +14,6 @@ export default function DispatchVerification() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Form State
   const [selectedOrderId, setSelectedOrderId] = useState('');
   const [conditionNotes, setConditionNotes] = useState('Product inspected in brand new condition. Security tag attached and polybag sealed.');
   const [sealIntact, setSealIntact] = useState(true);
@@ -25,10 +27,7 @@ export default function DispatchVerification() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [eRes, oRes] = await Promise.all([
-        dispatchService.list(),
-        orderService.list()
-      ]);
+      const [eRes, oRes] = await Promise.all([dispatchService.list(), orderService.list()]);
       setEvidenceList(eRes.data.dispatch_records);
       const unprotected = oRes.data.orders.filter(o => !o.has_dispatch_evidence);
       setOrders(unprotected);
@@ -42,20 +41,13 @@ export default function DispatchVerification() {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
-  const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files));
-  };
+  const handleFileChange = (e) => { setFiles(Array.from(e.target.files)); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    setSubmitting(true);
-
+    setError(''); setSuccess(''); setSubmitting(true);
     try {
       const fd = new FormData();
       fd.append('order_id', selectedOrderId);
@@ -63,7 +55,6 @@ export default function DispatchVerification() {
       fd.append('packaging_seal_intact', sealIntact);
       fd.append('tag_attached', tagAttached);
       files.forEach((f) => fd.append('images', f));
-
       const res = await dispatchService.create(fd);
       setSuccess('Dispatch evidence token and verification QR code generated!');
       setLatestToken(res.data.evidence);
@@ -79,7 +70,6 @@ export default function DispatchVerification() {
   return (
     <div className="dashboard-layout">
       <Sidebar user={user} onLogout={logout} />
-
       <main className="dashboard-main">
         <header className="dashboard-topbar">
           <div>
@@ -90,73 +80,54 @@ export default function DispatchVerification() {
 
         <div className="dashboard-content">
           {success && (
-            <div className="auth-alert" style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>
+            <motion.div className="auth-alert success" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '1rem' }}>
               <Check size={18} /> <span>{success}</span>
-            </div>
+            </motion.div>
           )}
           {error && (
-            <div className="auth-alert error">
+            <motion.div className="auth-alert error" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '1rem' }}>
               <AlertCircle size={18} /> <span>{error}</span>
-            </div>
+            </motion.div>
           )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem' }}>
             {/* Record New Evidence Form */}
-            <div className="card">
+            <motion.div className="card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-                <Camera size={20} className="text-accent" />
+                <Camera size={20} style={{ color: 'var(--color-violet)' }} />
                 <h3 className="heading-card">Capture Parcel Dispatch Proof</h3>
               </div>
 
               {orders.length === 0 ? (
                 <div className="empty-state" style={{ padding: '2rem 1rem' }}>
-                  <CheckCircle2 size={36} style={{ color: '#10b981', margin: '0 auto 0.5rem auto' }} />
+                  <CheckCircle2 size={36} style={{ color: 'var(--success)', margin: '0 auto 0.5rem auto' }} />
                   <p>All currently registered orders have dispatch evidence recorded!</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
                   <div className="form-group">
                     <label className="form-label">Select Order to Protect</label>
-                    <select
-                      className="form-input"
-                      value={selectedOrderId}
-                      onChange={(e) => setSelectedOrderId(e.target.value)}
-                      required
-                    >
+                    <select className="form-input" value={selectedOrderId} onChange={(e) => setSelectedOrderId(e.target.value)} required>
                       {orders.map(o => (
-                        <option key={o.id} value={o.id}>
-                          {o.order_ref} — {o.customer_name} ({o.product_name})
-                        </option>
+                        <option key={o.id} value={o.id}>{o.order_ref} — {o.customer_name} ({o.product_name})</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Product Packing Condition Observations</label>
-                    <textarea
-                      rows={3}
-                      className="form-input"
-                      value={conditionNotes}
-                      onChange={(e) => setConditionNotes(e.target.value)}
-                    />
+                    <textarea rows={3} className="form-input" value={conditionNotes} onChange={(e) => setConditionNotes(e.target.value)} />
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={sealIntact} 
-                        onChange={(e) => setSealIntact(e.target.checked)} 
-                      />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                      <input type="checkbox" checked={sealIntact} onChange={(e) => setSealIntact(e.target.checked)}
+                        style={{ accentColor: 'var(--color-violet)' }} />
                       <span>Packaging Seal Intact</span>
                     </label>
-
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={tagAttached} 
-                        onChange={(e) => setTagAttached(e.target.checked)} 
-                      />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                      <input type="checkbox" checked={tagAttached} onChange={(e) => setTagAttached(e.target.checked)}
+                        style={{ accentColor: 'var(--color-violet)' }} />
                       <span>Brand Security Tag Attached</span>
                     </label>
                   </div>
@@ -164,24 +135,13 @@ export default function DispatchVerification() {
                   <div className="form-group">
                     <label className="form-label">Upload Packing Photographs (Product, Tag & Shipping Label)</label>
                     <div style={{
-                      border: '2px dashed var(--border-strong)',
-                      padding: '1.5rem',
-                      borderRadius: 'var(--radius-md)',
-                      textAlign: 'center',
-                      background: '#f8fafc'
+                      border: '2px dashed var(--border-strong)', padding: '1.5rem',
+                      borderRadius: 'var(--radius-md)', textAlign: 'center',
+                      background: 'rgba(121, 87, 245, 0.02)', transition: 'border-color var(--transition-fast)'
                     }}>
-                      <Upload size={28} style={{ color: 'var(--color-accent-500)', margin: '0 auto 0.5rem auto' }} />
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        id="evidence-file-input"
-                        style={{ display: 'none' }}
-                      />
-                      <label htmlFor="evidence-file-input" className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>
-                        Browse Images
-                      </label>
+                      <Upload size={28} style={{ color: 'var(--color-violet)', margin: '0 auto 0.5rem auto' }} />
+                      <input type="file" multiple accept="image/*" onChange={handleFileChange} id="evidence-file-input" style={{ display: 'none' }} />
+                      <label htmlFor="evidence-file-input" className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', display: 'inline-flex' }}>Browse Images</label>
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
                         {files.length > 0 ? `${files.length} photo(s) selected` : 'PNG, JPG or WEBP (Max 16MB)'}
                       </div>
@@ -193,27 +153,33 @@ export default function DispatchVerification() {
                   </button>
                 </form>
               )}
-            </div>
+            </motion.div>
 
             {/* Generated QR Verification Card */}
-            <div className="card">
+            <motion.div className="card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-                <QrCode size={20} className="text-accent" />
+                <QrCode size={20} style={{ color: 'var(--color-cyan)' }} />
                 <h3 className="heading-card">Verification Token & QR</h3>
               </div>
 
               {latestToken ? (
-                <div style={{ textAlign: 'center', display: 'flex', flex_direction: 'column', alignItems: 'center', gap: '1rem' }}>
-                  <img 
-                    src={`http://127.0.0.1:5000${latestToken.qr_code_url}`} 
-                    alt="Evidence QR Code" 
-                    style={{ width: '170px', height: '170px', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '6px' }}
-                  />
+                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    padding: '12px', borderRadius: 'var(--radius-md)',
+                    background: 'linear-gradient(135deg, rgba(121, 87, 245, 0.06), rgba(66, 217, 232, 0.04))',
+                    border: '1px solid var(--border-subtle)'
+                  }}>
+                    <img 
+                      src={`http://127.0.0.1:5000${latestToken.qr_code_url}`} 
+                      alt="Evidence QR Code" 
+                      style={{ width: '170px', height: '170px', borderRadius: '8px' }}
+                    />
+                  </div>
                   <div>
-                    <span className="badge badge-neutral" style={{ fontSize: '0.85rem', padding: '0.35rem 0.75rem' }}>
+                    <span className="badge badge-neutral" style={{ fontSize: '0.85rem', padding: '0.4rem 0.85rem', fontFamily: 'monospace' }}>
                       {latestToken.evidence_token}
                     </span>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.65rem' }}>
                       Timestamp: {new Date(latestToken.captured_at).toLocaleString()}
                     </p>
                   </div>
@@ -224,11 +190,12 @@ export default function DispatchVerification() {
                   <p>Submit dispatch proof to generate a tamper-evident QR verification record.</p>
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
 
           {/* Saved Dispatch Evidence Records */}
-          <div className="table-container" style={{ marginTop: '2rem' }}>
+          <motion.div className="table-container" style={{ marginTop: '2rem' }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.2 }}>
             <div className="table-header">
               <h3 className="heading-card">Recorded Dispatch Proofs ({evidenceList.length})</h3>
             </div>
@@ -239,27 +206,20 @@ export default function DispatchVerification() {
                 <p>Loading dispatch evidence archives...</p>
               </div>
             ) : evidenceList.length === 0 ? (
-              <div className="empty-state">
-                <p>No dispatch evidence records saved yet.</p>
-              </div>
+              <div className="empty-state"><p>No dispatch evidence records saved yet.</p></div>
             ) : (
               <table className="custom-table">
                 <thead>
                   <tr>
-                    <th>Evidence Token</th>
-                    <th>Order Ref</th>
-                    <th>Customer</th>
-                    <th>Product</th>
-                    <th>Integrity Checks</th>
-                    <th>QR Code</th>
-                    <th>Timestamp</th>
+                    <th>Evidence Token</th><th>Order Ref</th><th>Customer</th><th>Product</th>
+                    <th>Integrity Checks</th><th>QR Code</th><th>Timestamp</th>
                   </tr>
                 </thead>
                 <tbody>
                   {evidenceList.map((e) => (
                     <tr key={e.id}>
-                      <td><span className="badge badge-neutral">{e.evidence_token}</span></td>
-                      <td><strong>{e.order_ref}</strong></td>
+                      <td><span className="badge badge-neutral" style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>{e.evidence_token}</span></td>
+                      <td><strong style={{ color: 'var(--color-violet)' }}>{e.order_ref}</strong></td>
                       <td>{e.customer_name}</td>
                       <td>{e.product_name}</td>
                       <td>
@@ -287,7 +247,7 @@ export default function DispatchVerification() {
                 </tbody>
               </table>
             )}
-          </div>
+          </motion.div>
         </div>
       </main>
     </div>

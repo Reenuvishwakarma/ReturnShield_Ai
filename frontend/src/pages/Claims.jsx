@@ -150,21 +150,21 @@ export default function Claims() {
         <div className="dashboard-content">
           {/* Quick Metrics */}
           <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
-            <div className="stat-card">
+            <div className="stat-card" style={{ borderTop: '3px solid #7957F5' }}>
               <span className="stat-card-title">Dossiers Generated</span>
               <span className="stat-card-value">{claims.length}</span>
               <span className="stat-card-subtitle">Formal dispute packages compiled</span>
             </div>
-            <div className="stat-card">
+            <div className="stat-card" style={{ borderTop: '3px solid #EF4444' }}>
               <span className="stat-card-title">Total Loss Claimed</span>
-              <span className="stat-card-value" style={{ color: 'var(--primary-light)' }}>
+              <span className="stat-card-value" style={{ color: '#DC2626' }}>
                 ₹{totalLossClaimed.toLocaleString()}
               </span>
               <span className="stat-card-subtitle">Pending merchant reimbursement</span>
             </div>
-            <div className="stat-card">
+            <div className="stat-card" style={{ borderTop: '3px solid #10B981' }}>
               <span className="stat-card-title">Platform Submission Ready</span>
-              <span className="stat-card-value" style={{ color: 'var(--success)' }}>
+              <span className="stat-card-value" style={{ color: '#059669' }}>
                 {claims.filter(c => c.status === 'Ready for Platform Submission').length}
               </span>
               <span className="stat-card-subtitle">Equipped with PDF evidence reports</span>

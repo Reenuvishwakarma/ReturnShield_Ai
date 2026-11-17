@@ -1,90 +1,91 @@
 /* ==========================================================================
-   ReturnShield AI Design Tokens & Color Palette
-   Theme: Clean, Light, Air-Light Glassmorphism & Electric Indigo (Linear / Stripe inspired)
+   ReturnShield AI — Premium SaaS Visual Identity Design Tokens
+   Theme: Midnight Navy, Deep Indigo, Electric Violet & Cyan Accent
    ========================================================================== */
 
 :root {
-  /* Typography Families */
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
 
-  /* Brand Primary Colors */
-  --color-primary-950: #070a13;
-  --color-primary-900: #0b0f19;
-  --color-primary-800: #111827;
-  --color-primary-700: #1e293b;
-  --color-primary-600: #334155;
-  --color-primary-500: #475569;
-
-  /* Accent Colors (Electric Indigo & Violet Glow) */
-  --color-accent-600: #4338ca;
-  --color-accent-500: #4f46e5;
-  --color-accent-400: #6366f1;
-  --color-accent-300: #818cf8;
-  --color-accent-200: #c7d2fe;
-  --color-accent-100: #e0e7ff;
-  --color-accent-50:  #eef2ff;
-
-  /* Backgrounds & Neutrals */
-  --bg-app: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-surface-subtle: #f1f5f9;
-  --bg-surface-glass: rgba(255, 255, 255, 0.85);
-  --bg-input: #f8fafc;
+  /* Specified Brand Palette */
+  --color-midnight: #11142B;
+  --color-deep-indigo: #29265F;
+  --color-violet: #7957F5;
+  --color-violet-light: #9B7DFF;
+  --color-violet-hover: #6743EE;
+  --color-soft-lavender: #EAE5FF;
+  --color-cyan: #42D9E8;
+  --color-cyan-glow: rgba(66, 217, 232, 0.25);
+  --color-bg-light: #F7F7FC;
+  --color-white: #FFFFFF;
 
   /* Text Colors */
-  --text-main: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
-  --text-inverse: #ffffff;
+  --text-primary: #20213A;
+  --text-secondary: #777A96;
+  --text-muted: #9598B2;
+  --text-inverse: #FFFFFF;
+  --text-on-dark: #F3F4F9;
+
+  /* Surfaces */
+  --bg-app: #F7F7FC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F0F0F7;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #11142B;
+  --bg-sidebar-card: #181C38;
+  --bg-input: #FFFFFF;
 
   /* Borders & Dividers */
-  --border-subtle: #e2e8f0;
-  --border-card: rgba(226, 232, 240, 0.9);
-  --border-strong: #cbd5e1;
-  --border-focus: #6366f1;
+  --border-subtle: #E8E8F2;
+  --border-card: #E4E4F0;
+  --border-strong: #D1D2E4;
+  --border-sidebar: rgba(255, 255, 255, 0.08);
 
-  /* Semantic Alerts / Risk System */
-  --risk-low-bg: #ecfdf5;
+  /* Semantic Alerts */
+  --risk-low-bg: #ECFDF5;
   --risk-low-text: #059669;
-  --risk-low-border: #a7f3d0;
+  --risk-low-border: #A7F3D0;
 
-  --risk-medium-bg: #fffbeb;
-  --risk-medium-text: #d97706;
-  --risk-medium-border: #fde68a;
+  --risk-medium-bg: #FFFBEB;
+  --risk-medium-text: #D97706;
+  --risk-medium-border: #FDE68A;
 
-  --risk-high-bg: #fef2f2;
-  --risk-high-text: #dc2626;
-  --risk-high-border: #fecaca;
+  --risk-high-bg: #FEF2F2;
+  --risk-high-text: #DC2626;
+  --risk-high-border: #FECACA;
 
-  --primary: #4f46e5;
-  --primary-light: #6366f1;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --primary: #7957F5;
+  --primary-light: #9B7DFF;
+  --secondary: #42D9E8;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
 
-  /* Soft Ambient Elevation Shadows */
-  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 2px 5px -1px rgba(15, 23, 42, 0.06), 0 1px 3px -1px rgba(15, 23, 42, 0.04);
-  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --shadow-card-hover: 0 16px 32px -4px rgba(79, 70, 229, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
-  --shadow-dropdown: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+  /* Premium Elevation Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(17, 20, 43, 0.03);
+  --shadow-sm: 0 2px 4px 0 rgba(17, 20, 43, 0.04);
+  --shadow-card: 0 4px 16px -2px rgba(17, 20, 43, 0.05), 0 2px 6px -1px rgba(17, 20, 43, 0.02);
+  --shadow-card-hover: 0 16px 36px -4px rgba(121, 87, 245, 0.12), 0 4px 12px -2px rgba(17, 20, 43, 0.04);
+  --shadow-dropdown: 0 20px 40px -8px rgba(17, 20, 43, 0.14), 0 6px 12px -2px rgba(17, 20, 43, 0.06);
+  --shadow-glow-violet: 0 8px 24px -4px rgba(121, 87, 245, 0.35);
+  --shadow-glow-cyan: 0 8px 24px -4px rgba(66, 217, 232, 0.35);
 
   /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
   /* Transitions */
-  --transition-fast: 180ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-normal: 280ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 380ms cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Layout Constants */
   --sidebar-width: 260px;
-  --sidebar-collapsed-width: 76px;
-  --navbar-height: 70px;
+  --sidebar-collapsed-width: 78px;
+  --navbar-height: 72px;
 }
